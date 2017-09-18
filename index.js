@@ -53,6 +53,37 @@ let do_viewports = ()=>{
     })();
 };
 
+/*
+ * Interacting
+ */
+let do_interacting = ()=>{
+    (async()=>{
+        const browser = await puppeteer.launch({
+            headless:false
+        });
+        const page = await browser.newPage();
+
+        await page.setViewport({
+            width:1200,
+            height:900
+        });
+        console.log('Viewport 1200x900');
+        console.log('cargando URI');
+        await page.goto('https://twitter.com/maru_sero');
+        await page.click('#search-query');
+        console.log('Focus');
+        await page.type('WWE', {delay:300});
+        console.log('Escribiendo...');
+
+        const searchForm = await page.$('#global-nav-search');
+        console.log('Submit');
+        await searchForm.evaluate(searchForm=>searchForm.submit());
+        console.log('LISTO!!!');
+
+        //Mantener el navegador abierto
+        //browser.close();
+    })();
+};
 
 
 /*
@@ -61,6 +92,9 @@ let do_viewports = ()=>{
 switch (action){
     case 'viewports':
         do_viewports();
+        break;
+    case 'interacting':
+        do_interacting();
         break;
     default:
         do_default();
