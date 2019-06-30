@@ -3,6 +3,7 @@ const puppeteer = require('puppeteer');
 const URI = process.env.URI || 'https://www.instagram.com/wwe/';
 const filename = Math.random().toString(36).substring(2,7);
 const action = process.env.ACTION || null;
+const path = require('path');
 
 /*
  * Default
@@ -15,7 +16,7 @@ let do_default = ()=>{
         await page.goto(URI);
 
         await page.screenshot({
-            path:`shots/${filename}.png`,
+            path: path.join(__dirname,`shots/${filename}.png`),
             fullPage:true
         });
 
@@ -69,16 +70,16 @@ let do_interacting = ()=>{
         });
         console.log('Viewport 1200x900');
         console.log('cargando URI');
-        await page.goto('https://twitter.com/maru_sero');
-        await page.click('#search-query');
+        await page.goto('https://twitter.com/id_marcedroid');
+        await page.waitFor('input[id="search-query"]');
         console.log('Focus');
-        await page.type('WWE', {delay:300});
+        await page.type('input[id="search-query"]','WWE', {delay:250});
         console.log('Escribiendo...');
 
-        const searchForm = await page.$('#global-nav-search');
-        console.log('Submit');
-        await searchForm.evaluate(searchForm=>searchForm.submit());
-        console.log('LISTO!!!');
+        await page.evaluate(()=>{
+          const element = document.getElementById('global-nav-search');
+          element.submit()
+        })
 
         //Mantener el navegador abierto
         //browser.close();
